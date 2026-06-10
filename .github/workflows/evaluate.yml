@@ -72,7 +72,7 @@ jobs:
       - name: POST result to leaderboard
         if: steps.detect.outputs.skip == 'false'
         run: |
-          curl -sf -X POST "${{ secrets.LEADERBOARD_API_URL }}/api/results" \
+          curl -sfL -X POST "${{ secrets.LEADERBOARD_API_URL }}/api/results" \
             -H "Authorization: Bearer ${{ secrets.SUBMIT_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d @results/latest.json
