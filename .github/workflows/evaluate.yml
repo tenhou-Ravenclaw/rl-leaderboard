@@ -60,6 +60,14 @@ jobs:
             --history results/history.json \
             --output leaderboard/README.md
 
+      - name: POST result to leaderboard
+        if: steps.detect.outputs.skip == 'false'
+        run: |
+          curl -sf -X POST "${{ secrets.LEADERBOARD_API_URL }}/api/results" \
+            -H "Authorization: Bearer ${{ secrets.SUBMIT_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d @results/latest.json
+
       - name: Commit results
         if: steps.detect.outputs.skip == 'false'
         run: |
