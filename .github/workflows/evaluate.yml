@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - "models/**"
+  workflow_dispatch:
+    inputs:
+      model_path:
+        description: "評価するモデルのパス (例: models/tenhou/SAC_v1/model.zip)"
+        required: true
 
 permissions:
   contents: write
@@ -20,7 +25,11 @@ jobs:
       - name: Detect changed model.zip
         id: detect
         run: |
-          changed=$(git diff --name-only HEAD^ HEAD | grep 'model\.zip' | head -1)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            changed="${{ github.event.inputs.model_path }}"
+          else
+            changed=$(git diff --name-only HEAD^ HEAD | grep 'model\.zip' | head -1)
+          fi
           if [ -z "$changed" ]; then
             echo "No model.zip changed, skipping."
             echo "skip=true" >> $GITHUB_OUTPUT
