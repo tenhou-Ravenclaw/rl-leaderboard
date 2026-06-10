@@ -5,6 +5,5 @@ __pycache__/
 venv/
 dist/
 build/
-results/latest.json
 results/local_test.json
 *.DS_Store
