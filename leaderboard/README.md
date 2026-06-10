@@ -1,6 +1,6 @@
 # RL Leaderboard
 
-> 最終更新: 2026-06-10 06:24 UTC
+> 最終更新: 2026-06-10 06:42 UTC
 
 ## Current Rankings
 
@@ -12,6 +12,7 @@
 
 | User | Model | Mean Reward | Std | Date |
 |------|-------|-------------|-----|------|
+| tenhou | SAC_v1 | -110.5 | 0.1 | 2026-06-10 |
 | tenhou | SAC_v1 | -110.5 | 0.1 | 2026-06-10 |
 
 ---
