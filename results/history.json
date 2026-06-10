@@ -43,5 +43,20 @@
     "mean_episode_length": 841.7,
     "mean_distance": 0.0,
     "mean_runtime_sec": 0.5111690521240234
+  },
+  {
+    "timestamp": "2026-06-10T08:42:46.446750+00:00",
+    "user": "tenhou",
+    "model": "TQC_v2",
+    "env": "BipedalWalker-v3",
+    "episodes": 10,
+    "mean_reward": 294.70574951171875,
+    "max_reward": 322.49188232421875,
+    "min_reward": 57.887451171875,
+    "std_reward": 78.9425277709961,
+    "completion_rate": 0.9,
+    "mean_episode_length": 646.1,
+    "mean_distance": 0.0,
+    "mean_runtime_sec": 0.3338223695755005
   }
 ]
