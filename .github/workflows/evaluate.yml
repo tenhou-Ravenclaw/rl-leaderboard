@@ -1,0 +1,70 @@
+name: Evaluate Model
+
+on:
+  push:
+    paths:
+      - "models/**"
+
+permissions:
+  contents: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed model.zip
+        id: detect
+        run: |
+          changed=$(git diff --name-only HEAD^ HEAD | grep 'model\.zip' | head -1)
+          if [ -z "$changed" ]; then
+            echo "No model.zip changed, skipping."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "model_path=$changed" >> $GITHUB_OUTPUT
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Python
+        if: steps.detect.outputs.skip == 'false'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        if: steps.detect.outputs.skip == 'false'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y swig
+          pip install -r requirements.txt
+
+      - name: Run evaluation
+        if: steps.detect.outputs.skip == 'false'
+        run: |
+          python scripts/evaluate.py \
+            --model-path "${{ steps.detect.outputs.model_path }}" \
+            --output results/latest.json
+
+      - name: Generate job summary
+        if: steps.detect.outputs.skip == 'false'
+        run: python scripts/generate_report.py results/latest.json
+
+      - name: Update leaderboard
+        if: steps.detect.outputs.skip == 'false'
+        run: |
+          python scripts/update_leaderboard.py \
+            --history results/history.json \
+            --output leaderboard/README.md
+
+      - name: Commit results
+        if: steps.detect.outputs.skip == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results/history.json results/latest.json leaderboard/README.md
+          git diff --cached --quiet || git commit -m "chore: update leaderboard after ${{ steps.detect.outputs.model_path }}"
+          git push
